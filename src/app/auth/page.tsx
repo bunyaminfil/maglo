@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { isAuthenticated, signIn, signUp } from "@/lib/auth";
@@ -9,7 +9,7 @@ import { signIn as nextAuthSignIn } from "next-auth/react";
 
 type Mode = "signin" | "signup";
 
-export default function AuthPage() {
+function AuthForm() {
   const router = useRouter();
   const search = useSearchParams();
   const initialMode = (search.get("mode") as Mode) || "signin";
@@ -226,4 +226,14 @@ export default function AuthPage() {
   );
 }
 
-
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    }>
+      <AuthForm />
+    </Suspense>
+  );
+}
